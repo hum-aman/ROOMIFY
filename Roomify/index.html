@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101827" />
+  <title>ROOMIFY — Make space for conversations</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home"><span class="brand-mark">R</span> ROOMIFY</a>
+    <span class="tagline">Make space for conversations</span>
+  </header>
+
+  <main class="shell" id="home">
+    <section class="hero" id="landing">
+      <div class="eyebrow">YOUR SPACE. YOUR PEOPLE.</div>
+      <h1>Every conversation<br><span>needs a room.</span></h1>
+      <p>Create a private room, invite your people and start talking.</p>
+      <div class="hero-actions">
+        <button class="btn primary large" id="showCreate">＋ Create a Room</button>
+        <button class="btn secondary large" id="showJoin">Join a Room</button>
+      </div>
+      <div class="feature-row"><span>● Private room codes</span><span>● Limited or unlimited</span><span>● Simple display name</span></div>
+    </section>
+
+    <section class="panel hidden" id="createPanel">
+      <button class="back" data-back="landing">← Back</button>
+      <div class="eyebrow">STEP 1 OF 2</div>
+      <h2>Create a Room</h2>
+      <p class="muted">Choose how many people can join your room.</p>
+      <div class="choice-grid">
+        <button class="choice" data-mode="limited"><span class="choice-icon">♙</span><strong>Limited Room</strong><small>Set your own member limit</small></button>
+        <button class="choice" data-mode="unlimited"><span class="choice-icon">♧</span><strong>Unlimited Room</strong><small>No fixed member cap in this demo</small></button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="setupPanel">
+      <button class="back" data-back="createPanel">← Back</button>
+      <div class="eyebrow">STEP 2 OF 2</div>
+      <h2>Set up your room</h2>
+      <p class="muted" id="modeDescription">Choose your room settings.</p>
+      <label class="field-label" for="roomName">Room name</label>
+      <input id="roomName" maxlength="40" placeholder="e.g. Friends Hangout" />
+      <div id="capacityWrap" class="field-block">
+        <label class="field-label" for="capacity">Maximum members</label>
+        <select id="capacity"><option>2</option><option>4</option><option>6</option><option>10</option><option>20</option><option>30</option><option>50</option></select>
+      </div>
+      <label class="field-label">Room code</label>
+      <div class="code-options">
+        <label class="radio-line"><input type="radio" name="codeType" value="custom" checked /> Create my own code</label>
+        <label class="radio-line"><input type="radio" name="codeType" value="random" /> Generate random code</label>
+      </div>
+      <div class="code-entry" id="customCodeWrap"><input id="customCode" maxlength="20" placeholder="Example: AMAN@123 or ROOM26X" autocomplete="off" /><small>Use 4–20 characters: letters, numbers, @, _ or -.</small></div>
+      <div class="code-entry hidden" id="randomCodeWrap"><div class="generated-code" id="randomCode">ROOM-XXXX-XXXX</div><button class="btn secondary" id="regenerate">↻ Generate another</button></div>
+      <button class="btn primary full" id="createConfirm">Create Room</button>
+      <p class="error" id="createError" role="alert"></p>
+    </section>
+
+    <section class="panel hidden" id="joinPanel">
+      <button class="back" data-back="landing">← Back</button>
+      <div class="eyebrow">JOIN YOUR PEOPLE</div>
+      <h2>Join a Room</h2>
+      <p class="muted">Enter the room code shared by the room creator.</p>
+      <label class="field-label" for="joinCode">Room code</label>
+      <input id="joinCode" placeholder="Enter code" maxlength="20" autocomplete="off" />
+      <label class="field-label" for="joinName">Your display name</label>
+      <input id="joinName" placeholder="Your name" maxlength="24" />
+      <button class="btn primary full" id="joinConfirm">Join Room</button>
+      <p class="error" id="joinError" role="alert"></p>
+    </section>
+
+    <section class="panel hidden" id="createdPanel">
+      <div class="success-mark">✓</div>
+      <div class="eyebrow">ROOM CREATED</div>
+      <h2 id="createdTitle">Your room is ready</h2>
+      <p class="muted" id="createdMeta"></p>
+      <div class="share-card"><span class="field-label">ROOM CODE — REQUIRED TO JOIN</span><div class="share-code" id="createdCode"></div><button class="btn secondary" id="copyCode">Copy code</button></div>
+      <div class="share-card"><span class="field-label">INVITE LINK</span><div class="link-line"><input id="inviteLink" readonly /><button class="btn secondary" id="copyLink">Copy</button></div><small>Everyone must also enter the room code to join.</small></div>
+      <button class="btn primary full" id="enterCreated">Enter Room</button>
+      <button class="text-btn" data-back="landing">Back to home</button>
+    </section>
+
+    <section class="panel hidden room-panel" id="chatPanel">
+      <div class="room-head"><div><div class="eyebrow">ROOMIFY CHAT</div><h2 id="chatRoomTitle">Room</h2><p class="muted" id="chatRoomMeta"></p></div><button class="btn secondary" id="leaveRoom">Leave</button></div>
+      <div class="chat-notice">This is a local preview. Messages are saved only in this browser.</div>
+      <div class="messages" id="messages"><div class="empty-chat">Your conversation starts here.<br />Say hello 👋</div></div>
+      <form class="composer" id="messageForm"><input id="messageInput" placeholder="Write a message…" maxlength="1000" /><button class="btn primary" type="submit">Send</button></form>
+      <div class="room-tools"><label class="btn secondary file-button">＋ Share photo/file<input id="fileInput" type="file" /></label><span id="fileStatus" class="muted"></span></div>
+      <div class="call-preview"><span>Voice call &nbsp; · &nbsp; Video call</span><small>Call features require a live server connection.</small></div>
+    </section>
+
+    <footer>ROOMIFY <span>•</span> A simple place to connect</footer>
+  </main>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+  
+</script>
+  <script type="module" src="app.js"></script>
+  <script type="module">
+  </script>
+</body>
+</html>
